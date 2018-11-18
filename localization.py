@@ -98,7 +98,7 @@ def localize(colors, measurements, motions, sensor_right, p_move):
 
 def show(p):
     rows = ['[' + ','.join(map(lambda x: '{0:.5f}'.format(x), r)) + ']' for r in p]
-    print '[' + ',\n '.join(rows) + ']'
+    print('[' + ',\n '.join(rows) + ']')
 
 
 #############################################################
