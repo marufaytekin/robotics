@@ -2,9 +2,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 from grid import create_grid
 from planning import *
-
-
 #from bresenham import bresenham
+
+
+def point(p):
+    return np.array([p[0], p[1], 1.]).reshape(1, -1)
+
+
+def collinearity_check(p1, p2, p3, epsilon=1e-6):
+    m = np.concatenate((p1, p2, p3), 0)
+    det = np.linalg.det(m)
+    return abs(det) < epsilon
+
+def prune_path(path):
+    pruned_path = [p for p in path]
+    # TODO: prune the path!
+
+    i = 0
+    while i < len(pruned_path) - 2:
+        p1 = point(pruned_path[i])
+        p2 = point(pruned_path[i + 1])
+        p3 = point(pruned_path[i + 2])
+
+        if collinearity_check(p1, p2, p3):
+            pruned_path.remove(pruned_path[i + 1])
+        else:
+            i += 1
+    return pruned_path
+
 
 plt.rcParams['figure.figsize'] = 12, 12
 
@@ -24,50 +49,30 @@ safe_distance = 3
 grid = create_grid(data, drone_altitude, safe_distance)
 
 # equivalent to
-# plt.imshow(np.flip(grid, 0))
+plt.imshow(np.flip(grid, 0))
 plt.imshow(grid, origin='lower')
 
 plt.xlabel('EAST')
 plt.ylabel('NORTH')
 plt.show()
 
-start = (25,  100)
-goal = (750., 370.)
-
-path, cost = a_star(grid, heuristic, start, goal)
+start_ne = (25,  100)
+goal_ne = (750., 370.)
+path, cost = a_star(grid, heuristic, start_ne, goal_ne)
+pruned_path = prune_path(path)
+print(pruned_path)
+print(len(pruned_path))
 
 plt.imshow(grid, cmap='Greys', origin='lower')
 
+pp = np.array(pruned_path)
+plt.plot(pp[:, 1], pp[:, 0], 'r')
+plt.scatter(pp[:, 1], pp[:, 0], color = 'r')
 
+plt.plot(start_ne[1], start_ne[0], 'x',  markersize=12)
+plt.plot(goal_ne[1], goal_ne[0], 'x',  markersize=12)
 
-def point(p):
-    return np.array([p[0], p[1], 1.]).reshape(1, -1)
+plt.xlabel('EAST')
+plt.ylabel('NORTH')
 
-def collinearity_check(p1, p2, p3, epsilon=1e-6):
-    m = np.concatenate((p1, p2, p3), 0)
-    det = np.linalg.det(m)
-    return abs(det) < epsilon
-
-
-def prune_path(path):
-    print(path)
-    if path is not None:
-        pruned_path = [p for p in path]
-        # TODO: prune the path!
-        curr = path[0]
-        print(curr)
-        i = 0
-        while i < len(path) - 2:
-            if collinearity_check(curr, path[i + 1], path[i + 2]):
-                pruned_path.remove(i + 1)
-                i += 1
-            else:
-                i += 1
-                curr = path[i]
-    else:
-        pruned_path = path
-
-    return pruned_path
-
-pruned_path = prune_path(path)
-print(pruned_path)
+plt.show()
