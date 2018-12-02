@@ -1,6 +1,6 @@
-from queue import PriorityQueue
 import numpy as np
 from enum import Enum
+from queue import PriorityQueue
 
 
 class Action(Enum):
@@ -139,20 +139,3 @@ def a_star(grid, h, start, goal):
 
     return path[::-1], path_cost
 
-
-start = (0, 0)
-goal = (4, 4)
-
-grid = np.array([
-    [0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 1, 1, 0],
-    [0, 0, 0, 1, 0, 0],
-])
-
-path, cost = a_star(grid, heuristic, start, goal)
-print(path, cost)
-
-# S -> start, G -> goal, O -> obstacle
-print(visualize_path(grid, path, start))
