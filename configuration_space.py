@@ -40,12 +40,6 @@ def create_grid(data, drone_altitude, safety_distance):
             ]
             grid[obstacle[0]:obstacle[1] + 1, obstacle[2]:obstacle[3] + 1] = 1
 
-        # TODO: Determine which cells contain obstacles
-        # and set them to 1.
-        #
-        # Example:
-        #
-        #    grid[north_coordinate, east_coordinate] = 1
     return grid
 
 
