@@ -129,9 +129,9 @@ def a_star(grid, h, start, goal):
         n = goal
         path_cost = branch[n][0]
         while branch[n][1] != start:
-            path.append(branch[n][2])
+            path.append(branch[n][1])
             n = branch[n][1]
-        path.append(branch[n][2])
+        path.append(branch[n][1])
     else:
         print('**********************')
         print('Failed to find a path!')
