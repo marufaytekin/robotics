@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from grid import create_grid
 from planning import *
 #from bresenham import bresenham
+from heuristics import *
 
 
 def point(p):
@@ -14,21 +15,22 @@ def collinearity_check(p1, p2, p3, epsilon=1e-6):
     det = np.linalg.det(m)
     return abs(det) < epsilon
 
+
 def prune_path(path):
-    pruned_path = [p for p in path]
+    _pruned_path = [p for p in path]
     # TODO: prune the path!
 
     i = 0
-    while i < len(pruned_path) - 2:
-        p1 = point(pruned_path[i])
-        p2 = point(pruned_path[i + 1])
-        p3 = point(pruned_path[i + 2])
+    while i < len(_pruned_path) - 2:
+        p1 = point(_pruned_path[i])
+        p2 = point(_pruned_path[i + 1])
+        p3 = point(_pruned_path[i + 2])
 
         if collinearity_check(p1, p2, p3):
-            pruned_path.remove(pruned_path[i + 1])
+            _pruned_path.remove(_pruned_path[i + 1])
         else:
             i += 1
-    return pruned_path
+    return _pruned_path
 
 
 plt.rcParams['figure.figsize'] = 12, 12
@@ -58,7 +60,7 @@ plt.show()
 
 start_ne = (25,  100)
 goal_ne = (750., 370.)
-path, cost = a_star(grid, heuristic, start_ne, goal_ne)
+path, cost = a_star(grid, euclidean, start_ne, goal_ne)
 pruned_path = prune_path(path)
 print(pruned_path)
 print(len(pruned_path))
