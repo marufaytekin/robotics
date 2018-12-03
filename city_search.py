@@ -1,19 +1,10 @@
-# OK this might look a little ugly but...
-# need to import the latest version of networkx
-# This occassionally fails, so if the next cell
-# doesn't show that you're using networkx 2.1
-# please "restart and clear output" from "Kernel" menu
-# above and try again.
-
-
-
-import networkx as nx
-nx.__version__
 import numpy as np
 import matplotlib.pyplot as plt
 from grid import create_grid_and_edges
 import numpy.linalg as LA
 from graph_search import a_star
+import networkx as nx
+nx.__version__
 
 plt.rcParams['figure.figsize'] = 12, 12
 
