@@ -1,4 +1,3 @@
-
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -84,10 +83,10 @@ class CoaxialCopter:
 
         return self.omega_1, self.omega_2
 
-# TEST CODE 1
 
+# TEST CODE 1
 bi = CoaxialCopter()
-stable_omega_1,stable_omega_2 = bi.set_rotors_angular_velocities(0.0, 0.0)
+stable_omega_1, stable_omega_2 = bi.set_rotors_angular_velocities(0.0, 0.0)
 
 print('Drone achieves stable hover with angular velocity of %5.2f' % stable_omega_1,
       'for the first propeller and %5.2f' % stable_omega_2,
@@ -105,7 +104,7 @@ vertical_acceleration = bi.z_dot_dot
 print('Increase by %5.2f' % math.sqrt(1.1),
       'of the propeller angular velocity will result in',
       '%5.2f' % vertical_acceleration,
-      'm/(s*s) vertical acceleration.' )
+      'm/(s*s) vertical acceleration.')
 
 answer = Answers.linear_acceleration(bi.m, bi.g, bi.k_f, bi.omega_1, bi.omega_2, vertical_acceleration)
 print(answer)
@@ -115,9 +114,9 @@ bi.omega_1 = stable_omega_1 * math.sqrt(1.1)
 bi.omega_2 = stable_omega_2 * math.sqrt(0.9)
 
 ang_acceleration = bi.psi_dot_dot
-print('Increase in %5.2f'%math.sqrt(1.1),' of the angular velocity for the first propellr and',
-      ' decrease of the angular velocity of the second propellr by %f.2f'%math.sqrt(0.9),' will result in',
-      '%5.2f'%ang_acceleration, 'rad/(s*s) angular acceleration.' )
+print('Increase in %5.2f' % math.sqrt(1.1), ' of the angular velocity for the first propellr and',
+      ' decrease of the angular velocity of the second propellr by %f.2f' % math.sqrt(0.9), ' will result in',
+      '%5.2f' % ang_acceleration, 'rad/(s*s) angular acceleration.')
 
 answer = Answers.angular_acceleration(bi.i_z, bi.k_m, bi.omega_1, bi.omega_2, ang_acceleration)
 print(answer)
