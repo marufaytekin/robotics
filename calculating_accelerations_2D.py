@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 
 pylab.rcParams['figure.figsize'] = 10, 10
 
 
-# In this exercise you will implement three more methods in the `Drone2D` class: `z_dot_dot(self)`, `y_dot_dot(self)`, and `phi_dot_dot(self)`
+# In this exercise you will implement three more methods in the `Drone2D` class: `z_dot_dot(self)`, `y_dot_dot(
+# self)`, and `phi_dot_dot(self)`
 
 # Also, consider the following equations which we have seen in the previous videos:
 # 
@@ -25,8 +22,6 @@ pylab.rcParams['figure.figsize'] = 10, 10
 # $$M_x = L(F_1 - F_2)$$
 # $$\ddot{\phi} = \frac{M_x}{I_x}$$
 # 
-
-# In[22]:
 
 
 class Drone2D:
@@ -114,9 +109,6 @@ class Drone2D:
         c, M_x = self.get_thrust_and_moment()
         _phi_dot_dot = M_x / self.I_x
         return _phi_dot_dot
-
-
-# In[23]:
 
 
 # TESTING CODE
