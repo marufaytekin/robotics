@@ -1,17 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-get_ipython().run_line_magic('matplotlib', 'inline')
-get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
-
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
-
 import numpy as np 
-import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 from simplified_monorotor import Monorotor
 import plotting
@@ -23,7 +13,8 @@ pylab.rcParams['figure.figsize'] = 10,10
 
 # # Feedforward control
 # 
-# The feedforward term captures the acceleration of the target path and adds to the $\bar{u}_1$ calculated by PD controller. 
+# The feedforward term captures the acceleration of the target path and adds to the $\bar{u}_1$ calculated by PD
+# controller.
 # 
 # $$
 # \ddot{z} = \bar{u}_1= k_p(z_t-z)+k_d(z_t-z)+\ddot{z}
@@ -41,8 +32,6 @@ pylab.rcParams['figure.figsize'] = 10,10
 # u_1 &= m(g - \bar{u}_1)
 # \end{align}
 # $$
-
-# In[2]:
 
 
 class PDController:
@@ -78,12 +67,11 @@ testing.pd_controller_test(PDController, feed_forward=True)
 # 
 # The code below generates plots of $z$ vs $t$ for two drones. One uses FF and the other doesn't.
 # 
-# Run the code and compare the two trajectories. What happens if you increase the oscillation frequency to 10? What happens if you decrease it to 2?
+# Run the code and compare the two trajectories. What happens if you increase the oscillation frequency to 10? What
+# happens if you decrease it to 2?
 # 
-# You should notice a **lag** in the system response: the trajectory without the feedforward term should lag behind the desired trajectory in time. This effect diminishes as the oscillation frequency decreases.
-
-# In[3]:
-
+# You should notice a **lag** in the system response: the trajectory without the feedforward term should lag behind
+# the desired trajectory in time. This effect diminishes as the oscillation frequency decreases.
 
 # This code simulates TWO drones. One uses the feed forward
 # acceleration and the other doesn't. Note the difference in
@@ -145,5 +133,3 @@ z_ff_actual = [h[0] for h in ff_history]
 plotting.compare_planned_to_actual(z_actual, z_path, t, 
                                    z_ff_actual)   
 
-
-# [Solution](/notebooks/PD%20with%20FF%20Solution.ipynb)
