@@ -17,73 +17,20 @@
 # 
 
 
-import numpy as np 
-import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
-
-import trajectories
 import simulate
 import plotting
+from controllers import LinearCascadingController
+from drone import Drone2D
+
+import trajectories
+
 
 pylab.rcParams['figure.figsize'] = 10, 10
 
 
 # #### TODO 1 - Review Simplified `Drone2D` class Walk through this code to refamiliarize youself with how state is
 # represented, how controls are set, and what the underlying dynamics are.
-
-
-class Drone2D:
-    """
-    Simulates the dynamics of a drone confined to 
-    motion in the y-z plane. 
-    """
-    def __init__(self,
-                 I_x = 0.1, # moment of inertia around the x-axis
-                 m = 0.2,   # mass of the vehicle 
-                ):
-        
-        self.I_x = I_x
-        self.m = m
-        
-        self.u1 = 0.0 # collective thrust
-        self.u2 = 0.0 # moment about the x axis
-        self.g = 9.81
-        
-        # z, y, phi, z_dot, y_dot, phi_dot
-        self.X = np.array([0.0,0.0,0.0,0.0,0.0,0.0])
-    
-    @property
-    def y_dot_dot(self):
-        phi = self.X[2]
-        return self.u1 / self.m * np.sin(phi)
-    
-    @property
-    def z_dot_dot(self):
-        phi = self.X[2]
-        return self.g - self.u1*np.cos(phi)/self.m
-    
-    @property
-    def phi_dot_dot(self):
-        return self.u2 / self.I_x
-    
-    def advance_state(self, dt):
-        
-        X_dot = np.array([self.X[3], 
-                        self.X[4],
-                        self.X[5], 
-                        self.z_dot_dot,
-                        self.y_dot_dot, 
-                        self.phi_dot_dot])
-        
-        
-        # Change in state will be 
-        self.X = self.X + X_dot * dt
-        return self.X 
-    
-    def set_controls(self, u1, u2):
-        self.u1 = u1
-        self.u2 = u2
-
 
 # ### Linear Cascading Controller
 # 
@@ -137,115 +84,6 @@ class Drone2D:
 # **Note the sequence of implementation, which should start from the INNER loop and then proceed with the OUTER loop.
 #  In this specific case, you should start implementing the ATTITUDE controller first, then proceed with the LATERAL
 # and ALTITUDE controller.**
-
-
-class LinearCascadingController:
-    
-    def __init__(self,
-                 m,   # needed to convert u1_bar to u1
-                 I_x, # needed to convert u2_bar to u2
-                 z_k_p=1.0,   
-                 z_k_d=1.0,   
-                 y_k_p=1.0,
-                 y_k_d=1.0,
-                 phi_k_p=1.0,
-                 phi_k_d=1.0):
-        
-        self.z_k_p = z_k_p
-        self.z_k_d = z_k_d   
-        self.y_k_p = y_k_p
-        self.y_k_d = y_k_d
-        self.phi_k_p = phi_k_p
-        self.phi_k_d = phi_k_d
-        
-        self.g = 9.81
-        self.I_x = I_x
-        self.m = m
-
-    def altitude_controller(self, 
-                    z_target, 
-                    z_actual, 
-                    z_dot_target, 
-                    z_dot_actual,
-                    z_dot_dot_target,
-                    phi_actual, # unused parameter. Ignore for now.
-                    ):
-        """
-        A PD controller which commands a thrust (u_1) 
-        for the vehicle. 
-        """
-        
-        # TODO (recommended to do AFTER attitude)
-        #   Implement feedforward PD control to calculate
-        #   u_1_bar and then use the linear math from above
-        #   to transform u_1_bar into u_1 and then return u_1
-        z_err = z_target - z_actual
-        z_err_dot = z_dot_target - z_dot_actual
-
-        p_term = self.z_k_p * z_err
-        d_term = self.z_k_d * z_err_dot
-
-        u_1_bar = p_term + d_term + z_dot_dot_target
-        u_1 = self.m* (self.g - u_1_bar)
-
-        return u_1
-    
-    def lateral_controller(self, 
-                        y_target, 
-                        y_actual, 
-                        y_dot_target, 
-                        y_dot_actual,
-                        u_1=None, # unused parameter. Ignore for now.
-                        y_dot_dot_ff=0.0,
-                        ):
-        """
-        A PD controller which commands a target roll 
-        angle (phi_commanded).
-        """
-        
-        # TODO (recommended to do AFTER attitude)
-        #   Implement feedforward PD control to calculate
-        #   y_dot_dot_target and then use the linear math from above
-        #   to transform y_dot_dot_target into phi_commanded
-        #   and then return phi_commanded
-        y_err = y_target - y_actual
-        y_err_dot = y_dot_target - y_dot_actual
-
-        p_term = self.y_k_p * y_err
-        d_term = self.y_k_d * y_err_dot
-        
-        y_dot_dot_target = p_term + d_term + y_dot_dot_ff
-        phi_commanded = y_dot_dot_target / self.g
-
-        return phi_commanded 
-
-
-
-    def attitude_controller(self, 
-                            phi_target, 
-                            phi_actual, 
-                            phi_dot_actual,
-                            phi_dot_target=0.0
-                           ):
-        """
-        A PD controller which commands a moment (u_2)
-        about the x axis for the vehicle.
-        """
-        
-        # TODO (recommended to do FIRST)
-        #   Implement PD control to calculate u_2_bar
-        #   and then use the linear math from above to
-        #   transform u_2_bar into u_2 and then return u_2
-        phi_err = phi_target - phi_actual
-        phi_err_dot = phi_dot_target - phi_dot_actual
-
-        p_term = self.phi_k_p * phi_err
-        d_term = self.phi_k_d * phi_err_dot
-        
-        u_2_bar = p_term + d_term
-        u_2 = (u_2_bar) * self.I_x
-
-        return u_2
 
 
 # The flight path we'll use to test our controller is a figure 8 described as follows:

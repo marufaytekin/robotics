@@ -3,13 +3,10 @@
 
 # # Non Linear Controller
 
-import numpy as np
-import math
-from math import sin, cos
-import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 
 from drone import Drone2D
+from controllers import NonLinearCascadingController
 
 import trajectories
 import simulate
@@ -52,103 +49,6 @@ pylab.rcParams['figure.figsize'] = 10, 10
 # 
 # Note that $\ddot{y}_{\text{target}}$ is like $\bar{u}_1$ or $\bar{u}_2$. It comes from PD control on the
 # controller's inputs.
-
-
-class NonLinearCascadingController:
-
-    def __init__(self,
-                 m,
-                 I_x,
-                 z_k_p=1.0,
-                 z_k_d=1.0,
-                 y_k_p=1.0,
-                 y_k_d=1.0,
-                 phi_k_p=1.0,
-                 phi_k_d=1.0):
-        self.z_k_p = z_k_p
-        self.z_k_d = z_k_d
-        self.y_k_p = y_k_p
-        self.y_k_d = y_k_d
-        self.phi_k_p = phi_k_p
-        self.phi_k_d = phi_k_d
-
-        self.g = 9.81
-        self.I_x = I_x
-        self.m = m
-
-    def altitude_controller(self,
-                            z_target,
-                            z_actual,
-                            z_dot_target,
-                            z_dot_actual,
-                            z_dot_dot_target,
-                            phi_actual):
-        # TODO (recommended to do AFTER attitude)
-        #   Implement feedforward PD control to calculate
-        #   u_1_bar and then use the non-linear math from above
-        #   to transform u_1_bar into u_1 and then return u_1
-
-        # for reference this is the linear implementation:
-        z_err = z_target - z_actual
-        z_err_dot = z_dot_target - z_dot_actual
-
-        p_term = self.z_k_p * z_err
-        d_term = self.z_k_d * z_err_dot
-
-        u_1_bar = p_term + d_term + z_dot_dot_target
-        u_1 = self.m * (self.g - u_1_bar) / math.cos(phi_actual)
-
-        return u_1
-
-    def lateral_controller(self,
-                           y_target,
-                           y_actual,
-                           y_dot_target,
-                           y_dot_actual,
-                           u_1,
-                           y_dot_dot_ff=0.0,
-                           ):
-        # TODO (recommended to do AFTER attitude)
-        #   Implement feedforward PD control to calculate
-        #   y_dot_dot_target and then use the non-linear math from above
-        #   to transform y_dot_dot_target into phi_commanded
-        #   and then return phi_commanded
-
-        # for reference this is the linear implementation:
-        y_err = y_target - y_actual
-        y_err_dot = y_dot_target - y_dot_actual
-
-        p_term = self.y_k_p * y_err
-        d_term = self.y_k_d * y_err_dot
-
-        y_dot_dot_target = p_term + d_term + y_dot_dot_ff
-
-        phi_commanded = math.asin(self.m * y_dot_dot_target / u_1)
-
-        return phi_commanded
-
-    def attitude_controller(self,
-                            phi_target,
-                            phi_actual,
-                            phi_dot_actual,
-                            phi_dot_target=0.0
-                            ):
-        # TODO (recommended to do FIRST)
-        #   Implement PD control to calculate u_2_bar
-        #   and then use the linear math from above to
-        #   transform u_2_bar into u_2 and then return u_2
-
-        # for reference this is the linear implementation:
-        phi_err = phi_target - phi_actual
-        phi_err_dot = phi_dot_target - phi_dot_actual
-
-        p_term = self.phi_k_p * phi_err
-        d_term = self.phi_k_d * phi_err_dot
-
-        u_2_bar = p_term + d_term
-        u_2 = (u_2_bar) * self.I_x
-
-        return u_2
 
 
 # The flight path we'll use to test our controller is a figure 8 described as follows:
