@@ -128,21 +128,15 @@ class UDACITYDroneIn3D:
                                         u_bar_p,
                                         u_bar_q,
                                         u_bar_r):
-
         c_bar = -c * self.m / self.k_f
-        p_bar = u_bar_p * self.i_x / (self.k_f * self.l)
-        q_bar = u_bar_q * self.i_y / (self.k_f * self.l)
-        r_bar = u_bar_r * self.i_z / self.k_m 
+        p_bar = self.i_x * u_bar_p / (self.k_f * self.l)
+        q_bar = self.i_y * u_bar_q / (self.k_f * self.l)
+        r_bar = -self.i_z * u_bar_r / self.k_m
 
-        omega_4 = (c_bar + p_bar - r_bar - q_bar)/4
-        omega_3 = (r_bar - p_bar)/2 + omega_4
-        omega_2 = (c_bar - p_bar)/2 - omega_3
-        omega_1 = c_bar - omega_2 - omega_3 - omega_4
-        
-        self.omega[0] = -np.sqrt(omega_1)
-        self.omega[1] = np.sqrt(omega_2)
-        self.omega[2] = -np.sqrt(omega_3)
-        self.omega[3] = np.sqrt(omega_4)
+        self.omega[0] = - np.sqrt(c_bar + p_bar + q_bar + r_bar) / 2
+        self.omega[1] = np.sqrt(c_bar - p_bar + q_bar - r_bar) / 2
+        self.omega[2] = - np.sqrt(c_bar - p_bar - q_bar + r_bar) / 2
+        self.omega[3] = np.sqrt(c_bar + p_bar - q_bar - r_bar) / 2
 
     def R(self):
         r_x = np.array([[1, 0, 0],
