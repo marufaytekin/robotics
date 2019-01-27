@@ -91,7 +91,7 @@ class matrix:
 
     # Thanks to Ernesto P. Adorio for use of Cholesky and CholeskyInverse functions
 
-    def Cholesky(self, ztol=1.0e-5):
+    def cholesky(self, ztol=1.0e-5):
         # Computes the upper triangular Cholesky factorization of
         # a positive definite matrix.
         res = matrix([[]])
@@ -116,7 +116,7 @@ class matrix:
                     raise ValueError("Zero diagonal")
         return res
 
-    def CholeskyInverse(self):
+    def cholesky_inverse(self):
         # Computes inverse of matrix given its Cholesky upper Triangular
         # decomposition of matrix.
         res = matrix([[]])
@@ -133,8 +133,8 @@ class matrix:
         return res
 
     def inverse(self):
-        aux = self.Cholesky()
-        res = aux.CholeskyInverse()
+        aux = self.cholesky()
+        res = aux.cholesky_inverse()
         return res
 
     def __repr__(self):
